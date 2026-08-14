@@ -4,4 +4,5 @@ This is a collection of ‘stuff’ that I’ve documented in my journey of lear
 
 ## Python
 [number_game.py](number_game.py)
+
 [word_game.py](word_game.py)
