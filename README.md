@@ -6,3 +6,7 @@ This is a collection of ‘stuff’ that I’ve documented in my journey of lear
 [number_game.py](number_game.py)
 
 [word_game.py](word_game.py)
+
+## Pygame
+
+[pygame_tutorial](pygame_tutorial)
