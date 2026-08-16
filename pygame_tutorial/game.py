@@ -1,39 +1,44 @@
 import pygame
 import sys
+from scripts.entities import PhysicsEntity
+from scripts.utils import load_image, load_images
+from scripts.tilemap import Tilemap
 
 class Game:
+
     def __init__(self):
 
         pygame.init()
 
         self.screen = pygame.display.set_mode((640, 480))
         pygame.display.set_caption("pygame_tutorial")
+        self.display = pygame.Surface((320, 240))
 
         self.clock = pygame.time.Clock()
-
-        self.img = pygame.image.load('pygame_tutorial\data\images\clouds\cloud_1.png').convert()
-        self.img.set_colorkey((0, 0, 0))
-
-        self.img_pos = [160, 260]
         self.movement = [False, False]
-        self.movement_speed = 5
+        self.assets = {
+            'decor': load_images('tiles/decor'),
+            'grass': load_images('tiles/grass'),
+            'large_decor': load_images('tiles/large_decor'),
+            'stone': load_images('tiles/stone'),
+            'player': load_image('entities/player.png')
+        }
+        self.player = PhysicsEntity(self, 'player', (50, 50), (8, 15))
 
-        self.collision_area =  pygame.Rect(50, 50, 300, 50)
+        self.tilemap = Tilemap(self, tile_size = 16)
 
     def run(self):  
+
         while True:
 
-            self.screen.fill((14, 219, 248))
+            #self.player.test()
 
-            self.img_pos[1] += (self.movement[1] - self.movement[0]) * self.movement_speed
+            self.display.fill((14, 219, 248))
 
-            img_r = pygame.Rect(self.img_pos[0], self.img_pos[1], self.img.get_width(), self.img.get_height())
-            if img_r.colliderect(self.collision_area):
-                pygame.draw.rect(self.screen, (0, 100, 255), self.collision_area)
-            else:
-                pygame.draw.rect(self.screen, (0, 50, 155), self.collision_area)
+            self.tilemap.render(self.display)
 
-            self.screen.blit(self.img, self.img_pos)
+            self.player.update((self.movement[1]-self.movement[0], 0))
+            self.player.render(self.display)
 
             for event in pygame.event.get():
 
@@ -43,21 +48,21 @@ class Game:
 
                 if event.type == pygame.KEYDOWN:
 
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_LEFT:
                         self.movement[0] = True
 
-                    if event.key == pygame.K_DOWN:
+                    if event.key == pygame.K_RIGHT:
                         self.movement[1] = True 
 
                 if event.type == pygame.KEYUP:
 
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_LEFT:
                         self.movement[0] = False
 
-                    if event.key == pygame.K_DOWN:
+                    if event.key == pygame.K_RIGHT:
                         self.movement[1] = False 
 
-
+            self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0, 0))
             pygame.display.update()
             self.clock.tick(60)
 
