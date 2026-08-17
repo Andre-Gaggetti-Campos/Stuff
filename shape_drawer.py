@@ -115,6 +115,6 @@ class Drawer:
             self.shapes.render()
 
             pygame.display.update()
-            #self.clock.tick(60)
+            self.clock.tick(60)
 
 Drawer().run()
