@@ -31,8 +31,6 @@ class Game:
 
         while True:
 
-            #self.player.test()
-
             self.display.fill((14, 219, 248))
 
             self.tilemap.render(self.display)
