@@ -1,6 +1,32 @@
 import pygame
 import sys
+import os
 import math
+
+class GUI:
+
+    def __init__(self, Drawer):
+
+        self.drawer = Drawer
+        self.default_path = 'shape_drawer_data/images/'
+
+    def load_image(self, path):
+
+        img = pygame.image.load(self.default_path + path).convert()
+        img.set_colorkey((0, 0, 0))
+        return img
+
+    def load_images(self, path):
+
+        images = []
+
+        for img_name in sorted(os.listdir(self.default_path + path)):
+
+            images.append(self.load_image(path + '/' + img_name))
+
+        return images
+
+
 
 class Shapes:
 
@@ -42,17 +68,24 @@ class Selector:
 
         if velocity[0] != 0 and velocity[1] != 0:
 
-            x_velocity /= math.sqrt(self.speed)
-            y_velocity /= math.sqrt(self.speed)
+            x_velocity /= math.sqrt(2)
+            y_velocity /= math.sqrt(2)
 
 
-        if self.pos[0] + velocity[0] > 0 and self.pos[0] + velocity[0] < self.drawer.screen.get_width():
+        self.pos[0] += x_velocity
+        self.pos[1] += y_velocity
 
-            self.pos[0] += x_velocity
+        half_size = self.size / 2
 
-        if self.pos[1] + velocity[1] > 0 and self.pos[1] + velocity[1] < self.drawer.screen.get_height():
+        self.pos[0] = max(
+            half_size,
+            min(self.pos[0], self.drawer.screen.get_width() - half_size)
+        )
 
-            self.pos[1] += y_velocity
+        self.pos[1] = max(
+            half_size,
+            min(self.pos[1], self.drawer.screen.get_height() - half_size)
+        )
 
     def render(self):
 
@@ -71,16 +104,20 @@ class Drawer:
 
         self.shapes = Shapes(self)
         self.selector = Selector(self, 6, 5)
+        self.selector.change_color((49, 54, 56))
         self.selector.velocity = [0, 0]
 
         self.directions = {pygame.K_UP: [0, -self.selector.speed], pygame.K_DOWN: [0, self.selector.speed], pygame.K_RIGHT: [self.selector.speed, 0], pygame.K_LEFT: [-self.selector.speed, 0]}
+
+        self.gui = GUI(self)
+        self.gui.load_images('')
         
     
     def run(self):
 
         while True:
 
-            self.screen.fill((255, 255, 255))
+            self.screen.fill((199, 220, 208))
 
             for event in pygame.event.get():
 
@@ -111,8 +148,8 @@ class Drawer:
 
             self.selector.update(self.selector.velocity)
 
-            self.selector.render()
             self.shapes.render()
+            self.selector.render()
 
             pygame.display.update()
             self.clock.tick(60)
