@@ -18,15 +18,11 @@ class GUI:
 
     def load_images(self, path):
 
-        images = []
+        self.images = []
 
         for img_name in sorted(os.listdir(self.default_path + path)):
 
-            images.append(self.load_image(path + '/' + img_name))
-
-        return images
-
-
+            self.images.append(self.load_image(path + '/' + img_name))
 
 class Shapes:
 
